@@ -1,0 +1,21 @@
+# Spring Boot secrets
+**/application.properties
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Maven
+**/target/
+
+# Node
+**/node_modules/
+**/.next/
+**/dist/
