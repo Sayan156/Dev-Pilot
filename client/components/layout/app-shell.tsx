@@ -69,8 +69,9 @@ export function AppShell({
                                 size="lg"
                                 render={<Link href="/dashboard" />}
                                 tooltip="DevPilot"
+                                className="[&>svg]:size-8!"
                             >
-                                <DevPilotIcon className="size-8 rounded-[10px]" />
+                                <DevPilotIcon className="size-9! rounded-[10px] group-data-[collapsible=icon]:size-8!" />
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-semibold">DevPilot</span>
                                     <span className="truncate text-xs text-muted-foreground">

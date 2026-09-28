@@ -9,9 +9,14 @@ import { toast } from "@/components/ui/toast";
 
 
 const INDEXING_POLL_MS = 2000;
+const STATUS_POLL_MS = 1500;
 
 function hasIndexingRepos(repos: Repository[] | undefined) {
     return repos?.some((repo) => repo.indexStatus === "INDEXING") ?? false;
+}
+
+function isIndexInProgress(status: Repository["indexStatus"] | undefined) {
+    return status === "PENDING" || status === "INDEXING";
 }
 
 function updateRepoInListCache(
@@ -46,7 +51,9 @@ export function useRepository(repoId: string) {
         queryFn: () => api.getRepo(repoId),
         enabled: Boolean(repoId),
         refetchInterval: (query) =>
-            query.state.data?.indexStatus === "INDEXING" ? INDEXING_POLL_MS : false,
+            isIndexInProgress(query.state.data?.indexStatus)
+                ? STATUS_POLL_MS
+                : false,
     });
 }
 
@@ -56,7 +63,9 @@ export function useIndexStatus(repoId: string, enabled = false) {
         queryFn: () => api.indexStatus(repoId),
         enabled: Boolean(repoId) && enabled,
         refetchInterval: (query) =>
-            query.state.data?.indexStatus === "INDEXING" ? 1500 : false,
+            isIndexInProgress(query.state.data?.indexStatus)
+                ? STATUS_POLL_MS
+                : false,
     });
 }
 
