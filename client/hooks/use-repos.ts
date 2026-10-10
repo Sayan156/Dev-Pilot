@@ -62,10 +62,10 @@ export function useIndexStatus(repoId: string, enabled = false) {
         queryKey: queryKeys.repos.status(repoId),
         queryFn: () => api.indexStatus(repoId),
         enabled: Boolean(repoId) && enabled,
-        refetchInterval: (query) =>
-            isIndexInProgress(query.state.data?.indexStatus)
-                ? STATUS_POLL_MS
-                : false,
+        // Keep polling while the chat screen is waiting. The first status
+        // response can race the async index worker, so deciding whether to
+        // poll from cached status can leave the screen stuck on an old value.
+        refetchInterval: enabled ? STATUS_POLL_MS : false,
     });
 }
 

@@ -48,7 +48,32 @@ export function useCreateChatSession(repositoryId: string) {
         },
     });
 }
+export function useDeleteChatSession(repositoryId: string) {
+    const queryClient = useQueryClient();
 
+    return useMutation({
+        mutationFn: (sessionId: string) =>
+            api.deleteSession(sessionId),
+
+        onSuccess: (_, sessionId) => {
+            void queryClient.invalidateQueries({
+                queryKey: queryKeys.chat.sessions(repositoryId),
+            });
+
+            queryClient.removeQueries({
+                queryKey: queryKeys.chat.messages(sessionId),
+            });
+        },
+
+        onError: (error: Error) => {
+            toast.add({
+                title: "Could not delete chat",
+                description: error.message,
+                type: "error",
+            });
+        },
+    });
+}
 export function useStreamChat(sessionId: string | null) {
     const queryClient = useQueryClient();
     const [streaming, setStreaming] = useState(false);

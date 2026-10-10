@@ -81,6 +81,18 @@ public class ChatService {
                 .map(this::toMessageResponse)
                 .toList();
     }
+    @Transactional
+    public void deleteSession(UUID userId, UUID sessionId) {
+
+        // Verify that the session exists and belongs to this user.
+        ChatSession session = requireSession(userId, sessionId);
+
+        // Delete all messages belonging to this session.
+        chatMessageRepository.deleteBySessionId(session.getId());
+
+        // Delete the session itself.
+        chatSessionRepository.delete(session);
+    }
 
     @Transactional(readOnly = true)
     public ChatSession requireSession(UUID userId, UUID sessionId) {
